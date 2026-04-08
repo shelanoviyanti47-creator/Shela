@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Shela Shop</title>
+<style>
+body {font-family:'Segoe UI';margin:0;background:#f5f5f5}
+header {background:#ee4d2d;color:white;padding:15px;text-align:center}
+#search {margin-top:10px;padding:8px;width:70%;border-radius:20px;border:none}
+#product-list {display:flex;flex-wrap:wrap;justify-content:center;padding:10px}
+.product {background:white;margin:10px;padding:10px;width:180px;border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+.product img{width:100%;border-radius:10px}
+.price{color:#ee4d2d;font-weight:bold}
+.old{color:gray;text-decoration:line-through;font-size:12px}
+.rating{color:gold}
+button{background:#ee4d2d;color:white;border:none;padding:8px;width:100%;border-radius:5px;margin-top:5px}
+#cart{position:fixed;right:10px;bottom:10px;background:white;padding:10px;border-radius:10px;width:220px;box-shadow:0 0 10px rgba(0,0,0,0.2)}
+#flash{background:yellow;text-align:center;padding:5px;font-weight:bold}
+</style>
+</head>
+<body>
+
+<header>
+<h2>🛍️ Shela Shop</h2>
+<input type="text" id="search" placeholder="Cari novel..." onkeyup="searchProduct()">
+</header>
+
+<div id="flash">🔥 Flash Sale Berakhir Dalam: <span id="timer"></span></div>
+
+<div id="product-list"></div>
+
+<div id="cart">
+<b>🛒 Keranjang</b>
+<div id="cart-items"></div>
+<p id="total">Total: Rp 0</p>
+<button onclick="checkout()">Checkout</button>
+</div>
+
+<script>
+const products=[
+{name:"Anak Jalanan",price:85000,old:100000,rating:4,img:"https://via.placeholder.com/150",cat:"Action"},
+{name:"Cinta Berandal",price:87000,old:110000,rating:5,img:"https://via.placeholder.com/150",cat:"Romance"},
+{name:"Dendam Aspal",price:88000,old:105000,rating:4,img:"https://via.placeholder.com/150",cat:"Action"},
+{name:"Balapan Malam",price:90000,old:120000,rating:5,img:"https://via.placeholder.com/150",cat:"Action"},
+{name:"Drama Jalanan",price:86000,old:99000,rating:3,img:"https://via.placeholder.com/150",cat:"Drama"}
+];
+
+let cart=[];let total=0;
+
+function stars(n){return "⭐".repeat(n)}
+
+function render(data){
+const c=document.getElementById("product-list");c.innerHTML="";
+data.forEach((p,i)=>{
+c.innerHTML+=`
+<div class="product">
+<img src="${p.img}">
+<p>${p.name}</p>
+<p class="old">Rp ${p.old}</p>
+<p class="price">Rp ${p.price}</p>
+<p class="rating">${stars(p.rating)}</p>
+<button onclick="addCart(${i})">+ Keranjang</button>
+</div>`});}
+
+function addCart(i){cart.push(products[i]);total+=products[i].price;updateCart()}
+
+function updateCart(){
+let html="";cart.forEach(i=>html+=`<p>${i.name}</p>`);
+document.getElementById("cart-items").innerHTML=html;
+document.getElementById("total").innerText="Total: Rp "+total}
+
+function searchProduct(){
+let k=document.getElementById("search").value.toLowerCase();
+render(products.filter(p=>p.name.toLowerCase().includes(k))) }
+
+function checkout(){
+let pesan="Halo Shela Shop, saya beli:\n";
+cart.forEach(i=>pesan+="- "+i.name+"\n");
+pesan+="Total: Rp "+total;
+window.open("https://wa.me/?text="+encodeURIComponent(pesan))}
+
+// Flash Sale Timer
+let time=3600;
+setInterval(()=>{
+let m=Math.floor(time/60);
+let s=time%60;
+document.getElementById("timer").innerText=m+":"+(s<10?"0":"")+s;
+time--;
+},1000);
+
+render(products);
+</script>
+
+</body>
+</html>
